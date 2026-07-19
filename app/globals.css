@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-background: #030303;
+  --color-card: #0b0b0b;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-primary: #00f5a0;
+  --color-secondary: #00d9ff;
+  --color-success: #00ff99;
+  --color-accent: #6ee7b7;
+  --color-text: #ffffff;
+  --color-muted: #a1a1aa;
+  --grid-opacity: 0.12;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(0, 245, 160, 0.12), transparent 30%),
+    radial-gradient(circle at 80% 0%, rgba(0, 217, 255, 0.14), transparent 24%),
+    linear-gradient(180deg, #040404 0%, #030303 55%, #020202 100%);
+  color: var(--color-text);
+  font-family: var(--font-body), system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.045), transparent 55%);
+  background-size: 64px 64px, 64px 64px, cover;
+  opacity: 0.35;
+  mix-blend-mode: screen;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.55), transparent);
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url('/noise.svg');
+  background-size: 240px 240px;
+  opacity: 0.18;
+  mix-blend-mode: soft-light;
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+::selection {
+  background: rgba(0, 245, 160, 0.25);
+  color: #fff;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display), system-ui, sans-serif;
+    letter-spacing: -0.04em;
+  }
+
+  p,
+  li,
+  span,
+  a,
+  button,
+  input,
+  textarea {
+    font-family: var(--font-body), system-ui, sans-serif;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
+
+@layer components {
+  .container-shell {
+    @apply mx-auto w-full max-w-7xl px-6 sm:px-8 lg:px-10;
+  }
+
+  .section-shell {
+    @apply relative py-20 sm:py-24 lg:py-32;
+  }
+
+  .glass-panel {
+    @apply border border-white/10 bg-white/[0.03] backdrop-blur-xl;
+    box-shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
+  }
+
+  .glass-panel-strong {
+    @apply border border-white/12 bg-white/[0.05] backdrop-blur-2xl;
+    box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
+  }
+
+  .glow-border {
+    position: relative;
+  }
+
+  .glow-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(0, 245, 160, 0.35), rgba(0, 217, 255, 0.25), rgba(255, 255, 255, 0.08));
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .text-gradient {
+    background: linear-gradient(90deg, #ffffff 0%, #dbfff1 22%, #00f5a0 52%, #00d9ff 82%, #ffffff 100%);
+    background-size: 220% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 12s linear infinite;
+  }
+
+  .subtle-grid {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .focus-ring {
+    @apply outline-none ring-0 transition duration-300;
+  }
+
+  .focus-ring:focus-visible {
+    box-shadow: 0 0 0 2px rgba(0, 245, 160, 0.22), 0 0 0 6px rgba(0, 217, 255, 0.12);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}

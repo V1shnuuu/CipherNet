@@ -1,0 +1,11 @@
+.next
+node_modules
+dist
+coverage
+managed/**/*.tmp
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
+.DS_Store
+.vscode/*.log

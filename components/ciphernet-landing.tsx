@@ -14,14 +14,14 @@ import {
   Shield,
   Sparkles
 } from 'lucide-react';
-import { AnimatedBackground } from '@/components/animated-background';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { SectionHeading } from '@/components/section-heading';
-import { SiteFooter } from '@/components/site-footer';
-import { SiteHeader } from '@/components/site-header';
+import { AnimatedBackground } from './animated-background';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
+import { Skeleton } from './ui/skeleton';
+import { SectionHeading } from './section-heading';
+import { SiteFooter } from './site-footer';
+import { SiteHeader } from './site-header';
 import {
   architectureLayers,
   developerWorkflow,
@@ -30,8 +30,8 @@ import {
   stateComparison,
   techStack,
   workflowSteps
-} from '@/lib/site';
-import { cn } from '@/lib/utils';
+} from '../lib/site';
+import { cn } from '../lib/utils';
 
 const featureIcons = {
   shield: Shield,

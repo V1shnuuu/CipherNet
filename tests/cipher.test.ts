@@ -8,7 +8,7 @@ import {
   hashCredential,
   verifyCredentialHash,
   type CredentialRegistrationInput
-} from '@/lib/cipher';
+} from '../lib/cipher';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 

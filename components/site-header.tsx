@@ -1,7 +1,7 @@
-import { navigation } from '@/lib/site';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { navigation } from '../lib/site';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
+import { cn } from '../lib/utils';
 
 export function SiteHeader({ className }: { className?: string }) {
   return (

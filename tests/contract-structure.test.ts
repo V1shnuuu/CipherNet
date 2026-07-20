@@ -2,23 +2,47 @@ import { describe, expect, it } from 'vitest';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
-describe('Managed contract surface', () => {
-  it('contains the required Compact contract functions and disclose usage', async () => {
-    const contractPath = path.join(process.cwd(), 'contracts', 'CredentialRegistry.compact');
-    const source = await readFile(contractPath, 'utf8');
+const forbiddenPrivateLedgerPatterns = [
+  /ownerSecret/i,
+  /witnessNonce/i,
+  /privateWitness/i,
+  /credentialOwners/i,
+  /privateWitnesses/i,
+  /disclose\s*\(\s*credential\s*\)/i
+];
 
-    expect(source).toContain('registerCredential');
-    expect(source).toContain('verifyCredential');
-    expect(source).toContain('disclose(');
-    expect(source).toContain('credentialOwners');
-    expect(source).toContain('privateWitnesses');
+describe('CredentialRegistry Compact privacy boundary', () => {
+  it('stores only public credential facts in ledger state', async () => {
+    const source = await readFile(path.join(process.cwd(), 'contracts', 'CredentialRegistry.compact'), 'utf8');
+
+    expect(source).toContain('import CompactStandardLibrary;');
+    expect(source).toContain('export sealed ledger credentialRecords');
+    expect(source).toContain('credentialHash');
+    expect(source).toContain('issuer');
+    expect(source).toContain('timestamp');
+    expect(source).toContain('status');
   });
 
-  it('includes a deploy-oriented managed directory', async () => {
-    const manifestPath = path.join(process.cwd(), 'managed', 'README.md');
-    const readme = await readFile(manifestPath, 'utf8');
+  it('does not store or disclose private witness material', async () => {
+    const source = await readFile(path.join(process.cwd(), 'contracts', 'CredentialRegistry.compact'), 'utf8');
 
-    expect(readme).toContain('Managed Artifacts');
-    expect(readme).toContain('preview or preprod deployment');
+    for (const pattern of forbiddenPrivateLedgerPatterns) {
+      expect(source).not.toMatch(pattern);
+    }
+  });
+
+  it('returns a boolean verification result instead of private proof material', async () => {
+    const source = await readFile(path.join(process.cwd(), 'contracts', 'CredentialRegistry.compact'), 'utf8');
+
+    expect(source).toMatch(/export circuit verifyCredential[\s\S]*\): Boolean/);
+    expect(source).not.toMatch(/return .*private/i);
+  });
+
+  it('keeps managed artifacts honest about toolchain output status', async () => {
+    const manifest = JSON.parse(
+      await readFile(path.join(process.cwd(), 'managed', 'CredentialRegistry.manifest.json'), 'utf8')
+    ) as { note?: string };
+
+    expect(manifest.artifactStatus).toBe('compiled');
   });
 });

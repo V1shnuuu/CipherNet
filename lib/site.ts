@@ -55,13 +55,13 @@ export const features: FeatureItem[] = [
     icon: 'shield'
   },
   {
-    title: 'Private Witness',
-    description: 'Keep owner secrets and witness material off the public ledger while still enabling deterministic checks.',
+    title: 'Public State Boundary',
+    description: 'Keep owner secrets, nonces, signatures, and plaintext metadata out of ledger state.',
     icon: 'fingerprint'
   },
   {
-    title: 'Zero Knowledge Ready',
-    description: 'The product is designed around proof-first verification so future circuits can move from witness checks to full ZK proofs.',
+    title: 'Zero Knowledge Pending',
+    description: 'The current code protects the state boundary while real proof circuits and verifier wiring are added.',
     icon: 'sparkles'
   },
   {
@@ -76,7 +76,7 @@ export const features: FeatureItem[] = [
   },
   {
     title: 'Secure Storage',
-    description: 'Public and private state are intentionally separated to reduce accidental disclosure and simplify compliance.',
+    description: 'Encrypted bytes are prepared client-side before any storage provider receives credential data.',
     icon: 'database'
   },
   {
@@ -93,27 +93,27 @@ export const features: FeatureItem[] = [
 
 export const workflowSteps: WorkflowStep[] = [
   { label: 'User', detail: 'An individual opens CipherNet and selects a credential to verify.' },
-  { label: 'Upload Credential', detail: 'Only the minimal metadata required for verification is introduced into the flow.' },
-  { label: 'Generate Hash', detail: 'The credential is canonicalized and converted into a deterministic digest.' },
-  { label: 'Private Witness', detail: 'Owner secret and witness data remain private and never become public state.' },
-  { label: 'Compact Contract', detail: 'The contract stores the hash, issuer, and timestamp while guarding private material.' },
-  { label: 'Verification', detail: 'The proof path confirms authenticity without revealing the original document.' },
+  { label: 'Encrypt Locally', detail: 'Credential bytes are encrypted with AES-GCM before storage or upload.' },
+  { label: 'Generate Hash', detail: 'The encrypted credential has a deterministic SHA-256 digest for registration.' },
+  { label: 'Private Material', detail: 'Owner secrets, nonces, signatures, and plaintext metadata stay client-side.' },
+  { label: 'Compact Contract', detail: 'The contract stores only the hash, issuer, timestamp, and status.' },
+  { label: 'Verification', detail: 'The registry returns a boolean based on public record matching.' },
   { label: 'Success', detail: 'The verifier sees only the minimum information needed to trust the result.' }
 ];
 
 export const architectureLayers: ArchitectureLayer[] = [
   { title: 'Frontend', detail: 'Next.js 15 app with premium motion design and a privacy-first product narrative.' },
   { title: 'Compact Contract', detail: 'CredentialRegistry encodes public state and private witness handling on Midnight.' },
-  { title: 'Proof Server', detail: 'Express service validates preview requests and prepares verification payloads.' },
-  { title: 'Managed Circuits', detail: 'Generated artifacts live in managed/ and are ready for Midnight toolchain output.' },
-  { title: 'Preview Network', detail: 'The codebase is structured for deployment to Midnight preview or preprod.' }
+  { title: 'Public Record API', detail: 'Express service rejects private fields and hashes public registration payloads only.' },
+  { title: 'Managed Manifest', detail: 'managed/ contains a source-audit hash, not compiled circuits or keys.' },
+  { title: 'Toolchain Pending', detail: 'Official Midnight compilation and deployment remain the next Phase 1 milestone.' }
 ];
 
 export const stateComparison: ComparisonItem[] = [
   {
     label: 'Credential hash',
     publicState: 'Stored on-chain as a deterministic reference for integrity checks.',
-    privateWitness: 'Not revealed; only the derived witness path is used during verification.'
+    privateWitness: 'Computed from encrypted credential bytes and never expanded into plaintext on the backend.'
   },
   {
     label: 'Issuer',
@@ -128,7 +128,7 @@ export const stateComparison: ComparisonItem[] = [
   {
     label: 'Credential file',
     publicState: 'Never stored as a readable document.',
-    privateWitness: 'Remains private, with disclose() revealing only the minimal witness context.'
+    privateWitness: 'Remains client-side. The contract never discloses or stores the credential bytes.'
   }
 ];
 
@@ -139,23 +139,23 @@ export const techStack: TechItem[] = [
   { name: 'TailwindCSS', detail: 'Utility-first styling tuned to the CipherNet visual system.' },
   { name: 'shadcn/ui', detail: 'Accessible primitives implemented in the project to keep the stack lightweight.' },
   { name: 'Framer Motion', detail: 'Premium transitions, parallax, magnetic hover, and scroll reveal.' },
-  { name: 'Express', detail: 'Compact backend surface for health checks and verification previews.' },
-  { name: 'Vitest', detail: 'Fast unit tests for the contract model, hashing flow, and repo requirements.' }
+  { name: 'Express', detail: 'Compact backend surface for health checks and public-record hashing.' },
+  { name: 'Vitest', detail: 'Fast unit tests for crypto, public records, and privacy-boundary regressions.' }
 ];
 
 export const developerWorkflow: DevWorkflowStep[] = [
   { title: 'Clone and install', detail: 'Install npm dependencies and copy the environment template.' },
   { title: 'Run locally', detail: 'Start the Next.js app and Express proof server in parallel.' },
-  { title: 'Prepare managed artifacts', detail: 'Run the managed compilation script when Midnight tooling is available.' },
-  { title: 'Verify contract', detail: 'Use the verification script and Vitest suite to guard the privacy model.' },
-  { title: 'Deploy preview', detail: 'Connect the contract to Midnight preview or preprod, then ship the frontend.' }
+  { title: 'Prepare manifest', detail: 'Run the managed source-audit script to hash the current contract source.' },
+  { title: 'Verify contract', detail: 'Use the verification script and Vitest suite to guard the public/private boundary.' },
+  { title: 'Compile officially', detail: 'Use the Midnight toolchain before any preview or preprod deployment.' }
 ];
 
 export const roadmap: RoadmapItem[] = [
   {
     phase: '01',
     title: 'Public Beta Foundation',
-    detail: 'Ship the New Moon submission with the core verification flow, stable design system, and deployment path.'
+    detail: 'Ship a public-only registry, client encryption, storage boundary, and honest local verification checks.'
   },
   {
     phase: '02',

@@ -1,78 +1,84 @@
 import type { Metadata, Viewport } from 'next';
-import { IBM_Plex_Mono, IBM_Plex_Sans, Space_Grotesk } from 'next/font/google';
+import { Inter, JetBrains_Mono } from 'next/font/google';
+import { WalletProvider } from '../lib/wallet-provider';
 import './globals.css';
 
-const displayFont = Space_Grotesk({
-  subsets: ['latin'],
-  variable: '--font-display',
-  display: 'swap'
-});
-
-const bodyFont = IBM_Plex_Sans({
+const inter = Inter({
   subsets: ['latin'],
   variable: '--font-body',
   display: 'swap',
-  weight: ['400', '500', '600']
 });
 
-const monoFont = IBM_Plex_Mono({
+const interDisplay = Inter({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800'],
+});
+
+const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
   display: 'swap',
-  weight: ['400', '500']
+  weight: ['400', '500'],
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://ciphernet.midnight'),
+  metadataBase: new URL('https://cipher-net-eight.vercel.app'),
   title: {
-    default: 'CipherNet',
-    template: '%s | CipherNet'
+    default: 'CipherNet — The Privacy Layer for Digital Trust',
+    template: '%s | CipherNet',
   },
-  description: 'CipherNet is a privacy-first credential verification platform built on Midnight.',
+  description:
+    'Privacy-preserving credential verification platform built on Midnight. Verify credentials without revealing them using zero-knowledge proofs and confidential smart contracts.',
   applicationName: 'CipherNet',
   keywords: [
     'Midnight',
     'Compact',
     'Confidential smart contracts',
     'Credential verification',
-    'Privacy infrastructure',
-    'Zero knowledge'
+    'Privacy',
+    'Zero knowledge proofs',
+    'Lace wallet',
+    'Blockchain',
   ],
   authors: [{ name: 'CipherNet' }],
   icons: {
     icon: '/logo.svg',
-    shortcut: '/logo.svg'
+    shortcut: '/logo.svg',
   },
   openGraph: {
-    title: 'CipherNet',
-    description: 'The privacy layer for digital credential verification.',
-    url: 'https://ciphernet.midnight',
+    title: 'CipherNet — The Privacy Layer for Digital Trust',
+    description: 'Verify credentials without revealing them. Built on Midnight.',
+    url: 'https://cipher-net-eight.vercel.app',
     siteName: 'CipherNet',
-    type: 'website'
+    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'CipherNet',
-    description: 'The privacy layer for digital credential verification.'
+    title: 'CipherNet — The Privacy Layer for Digital Trust',
+    description: 'Verify credentials without revealing them. Built on Midnight.',
   },
   robots: {
     index: true,
-    follow: true
-  }
+    follow: true,
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#030303',
+  themeColor: '#020202',
   colorScheme: 'dark',
   width: 'device-width',
-  initialScale: 1
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="dark scroll-smooth">
-      <body className={`${displayFont.variable} ${bodyFont.variable} ${monoFont.variable} bg-background text-text antialiased`}>
-        {children}
+    <html lang="en" className="dark scroll-smooth" suppressHydrationWarning>
+      <body
+        className={`${inter.variable} ${interDisplay.variable} ${jetbrainsMono.variable} bg-background text-text antialiased`}
+      >
+        <WalletProvider>{children}</WalletProvider>
       </body>
     </html>
   );

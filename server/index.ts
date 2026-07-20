@@ -1,42 +1,64 @@
 import cors from 'cors';
 import express from 'express';
-import { hashCredential } from '../lib/cipher';
+import { z } from 'zod';
+import { createPublicLedgerRecord, hashPublicRecord } from '../lib/cipher';
 
 const app = express();
 const port = Number(process.env.PORT ?? 4000);
 
+const forbiddenPrivateFields = [
+  'credential',
+  'document',
+  'documentBytes',
+  'metadata',
+  'ownerSecret',
+  'privateKey',
+  'privateWitness',
+  'rawCredential',
+  'signature',
+  'subject',
+  'witnessNonce'
+];
+
+const publicRecordSchema = z
+  .object({
+    credentialHash: z.string().min(1),
+    issuer: z.string().min(1),
+    timestamp: z.string().min(1)
+  })
+  .strict();
+
 app.use(cors());
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json({ limit: '32kb' }));
 
 app.get('/health', (_request, response) => {
-  response.json({ ok: true, service: 'ciphernet-proof-server', timestamp: new Date().toISOString() });
+  response.json({ ok: true, service: 'ciphernet-public-record-server', timestamp: new Date().toISOString() });
 });
 
-app.post('/api/hash', async (request, response) => {
-  const credential = request.body as {
-    credentialType?: string;
-    issuer?: string;
-    subject?: string;
-    issuedAt?: string;
-    documentHash?: string;
-  };
+app.post('/api/public-record/hash', async (request, response) => {
+  const receivedFields = Object.keys((request.body ?? {}) as Record<string, unknown>);
+  const leakedField = receivedFields.find((field) => forbiddenPrivateFields.includes(field));
 
-  if (!credential.credentialType || !credential.issuer || !credential.subject || !credential.issuedAt || !credential.documentHash) {
-    response.status(400).json({ error: 'Missing credential fields.' });
+  if (leakedField) {
+    response.status(400).json({ error: `Private field "${leakedField}" must never be sent to the backend.` });
     return;
   }
 
-  const credentialHash = await hashCredential({
-    credentialType: credential.credentialType,
-    issuer: credential.issuer,
-    subject: credential.subject,
-    issuedAt: credential.issuedAt,
-    documentHash: credential.documentHash
-  });
+  const parsed = publicRecordSchema.safeParse(request.body);
 
-  response.json({ credentialHash });
+  if (!parsed.success) {
+    response.status(400).json({ error: 'Expected only credentialHash, issuer, and timestamp.' });
+    return;
+  }
+
+  try {
+    const publicRecord = createPublicLedgerRecord(parsed.data);
+    response.json({ publicRecord, publicRecordHash: await hashPublicRecord(publicRecord) });
+  } catch (error) {
+    response.status(400).json({ error: error instanceof Error ? error.message : 'Invalid public record.' });
+  }
 });
 
 app.listen(port, () => {
-  process.stdout.write(`CipherNet proof server listening on http://localhost:${port}\n`);
+  process.stdout.write(`CipherNet public record server listening on http://localhost:${port}\n`);
 });

@@ -1,37 +1,26 @@
-export type CredentialCategory = 'identity' | 'education' | 'medical' | 'financial';
+export type CredentialStatus = 'active' | 'revoked';
 
-export interface CredentialPayload {
-  credentialType: string;
-  issuer: string;
-  subject: string;
-  issuedAt: string;
-  documentHash: string;
-}
-
-export interface PrivateWitness {
-  ownerSecret: string;
-  witnessNonce: string;
-}
-
-export interface CredentialRegistrationInput extends CredentialPayload, PrivateWitness {}
-
-export interface PublicLedgerRecord {
+export interface PublicCredentialRegistrationInput {
   credentialHash: string;
   issuer: string;
   timestamp: string;
 }
 
-export interface PrivateLedgerRecord {
-  credential: CredentialPayload;
-  ownerSecret: string;
-  privateWitness: string;
+export interface PublicLedgerRecord extends PublicCredentialRegistrationInput {
+  status: CredentialStatus;
 }
 
-export interface VerificationReceipt {
-  verified: boolean;
-  publicRecord: PublicLedgerRecord;
-  privateWitness: string;
+export interface ClientPrivateCredentialBundle {
+  encryptedCredentialCid: string;
+  encryptionKeyFingerprint: string;
+  witnessNonce: string;
 }
+
+export interface VerificationResult {
+  verified: boolean;
+}
+
+const HEX_32_BYTES = /^[a-f0-9]{64}$/i;
 
 async function sha256(value: string): Promise<string> {
   const encoder = new TextEncoder();
@@ -42,62 +31,53 @@ async function sha256(value: string): Promise<string> {
     .join('');
 }
 
-export function canonicalizeCredential(credential: CredentialPayload): string {
+export function normalizeHex32(value: string, fieldName = 'value'): string {
+  const normalized = value.trim().replace(/^0x/i, '').toLowerCase();
+
+  if (!HEX_32_BYTES.test(normalized)) {
+    throw new Error(`${fieldName} must be a 32-byte hex string.`);
+  }
+
+  return normalized;
+}
+
+export function canonicalizePublicRecord(input: PublicCredentialRegistrationInput): string {
   return JSON.stringify(
     {
-      credentialType: credential.credentialType.trim().toLowerCase(),
-      documentHash: credential.documentHash.trim().toLowerCase(),
-      issuer: credential.issuer.trim().toLowerCase(),
-      issuedAt: credential.issuedAt.trim(),
-      subject: credential.subject.trim().toLowerCase()
+      credentialHash: normalizeHex32(input.credentialHash, 'credentialHash'),
+      issuer: normalizeHex32(input.issuer, 'issuer'),
+      timestamp: input.timestamp.trim()
     },
-    ['credentialType', 'documentHash', 'issuer', 'issuedAt', 'subject']
+    ['credentialHash', 'issuer', 'timestamp']
   );
 }
 
-export async function hashCredential(credential: CredentialPayload): Promise<string> {
-  return sha256(canonicalizeCredential(credential));
+export async function hashPublicRecord(input: PublicCredentialRegistrationInput): Promise<string> {
+  return sha256(canonicalizePublicRecord(input));
 }
 
-export async function derivePrivateWitness(ownerSecret: string, witnessNonce: string, credentialHash: string): Promise<string> {
-  return sha256(`${ownerSecret.trim()}::${witnessNonce.trim()}::${credentialHash.trim().toLowerCase()}`);
-}
-
-export async function createPublicLedgerRecord(input: CredentialRegistrationInput): Promise<PublicLedgerRecord> {
+export function createPublicLedgerRecord(input: PublicCredentialRegistrationInput): PublicLedgerRecord {
   return {
-    credentialHash: await hashCredential(input),
-    issuer: input.issuer.trim(),
-    timestamp: input.issuedAt.trim()
+    credentialHash: normalizeHex32(input.credentialHash, 'credentialHash'),
+    issuer: normalizeHex32(input.issuer, 'issuer'),
+    timestamp: input.timestamp.trim(),
+    status: 'active'
   };
 }
 
-export async function createPrivateLedgerRecord(input: CredentialRegistrationInput): Promise<PrivateLedgerRecord> {
-  const credentialHash = await hashCredential(input);
-
+export function verifyPublicLedgerRecord(
+  record: PublicLedgerRecord,
+  expected: PublicCredentialRegistrationInput
+): VerificationResult {
   return {
-    credential: {
-      credentialType: input.credentialType.trim(),
-      issuer: input.issuer.trim(),
-      subject: input.subject.trim(),
-      issuedAt: input.issuedAt.trim(),
-      documentHash: input.documentHash.trim()
-    },
-    ownerSecret: input.ownerSecret.trim(),
-    privateWitness: await derivePrivateWitness(input.ownerSecret, input.witnessNonce, credentialHash)
+    verified:
+      record.status === 'active' &&
+      record.credentialHash === normalizeHex32(expected.credentialHash, 'credentialHash') &&
+      record.issuer === normalizeHex32(expected.issuer, 'issuer') &&
+      record.timestamp === expected.timestamp.trim()
   };
 }
 
-export async function verifyCredentialHash(input: CredentialPayload, expectedHash: string): Promise<boolean> {
-  return (await hashCredential(input)) === expectedHash.trim().toLowerCase();
-}
-
-export async function createVerificationReceipt(input: CredentialRegistrationInput, expectedHash?: string): Promise<VerificationReceipt> {
-  const publicRecord = await createPublicLedgerRecord(input);
-  const privateWitness = await derivePrivateWitness(input.ownerSecret, input.witnessNonce, publicRecord.credentialHash);
-
-  return {
-    verified: expectedHash ? publicRecord.credentialHash === expectedHash.trim().toLowerCase() : true,
-    publicRecord,
-    privateWitness
-  };
+export async function deriveClientKeyFingerprint(rawKeyHex: string): Promise<string> {
+  return sha256(`ciphernet:key-fingerprint:${normalizeHex32(rawKeyHex, 'rawKeyHex')}`);
 }

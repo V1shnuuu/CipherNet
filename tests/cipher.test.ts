@@ -1,80 +1,82 @@
 import { describe, expect, it } from 'vitest';
 import {
-  canonicalizeCredential,
-  createPrivateLedgerRecord,
   createPublicLedgerRecord,
-  createVerificationReceipt,
-  derivePrivateWitness,
-  hashCredential,
-  verifyCredentialHash,
-  type CredentialRegistrationInput
+  deriveClientKeyFingerprint,
+  hashPublicRecord,
+  normalizeHex32,
+  verifyPublicLedgerRecord,
+  type PublicCredentialRegistrationInput
 } from '../lib/cipher';
-import { readFile } from 'node:fs/promises';
-import path from 'node:path';
+import {
+  decryptCredentialBytes,
+  encryptCredentialBytes,
+  exportAesGcmKeyHex,
+  generateAesGcmKey,
+  importAesGcmKeyHex,
+  sha256Hex,
+  utf8ToBytes
+} from '../packages/crypto/src';
 
-const sampleInput: CredentialRegistrationInput = {
-  credentialType: 'Passport',
-  issuer: 'Republic Identity Authority',
-  subject: 'Ada Lovelace',
-  issuedAt: '2026-07-19T00:00:00.000Z',
-  documentHash: '0xabc123feedbeef',
-  ownerSecret: 'owner-secret-alpha',
-  witnessNonce: 'nonce-42'
+const samplePublicInput: PublicCredentialRegistrationInput = {
+  credentialHash: 'a'.repeat(64),
+  issuer: 'b'.repeat(64),
+  timestamp: '2026-07-19T00:00:00.000Z'
 };
 
-describe('CipherNet credential flow', () => {
-  it('registers a credential into public and private records', async () => {
-    const publicRecord = await createPublicLedgerRecord(sampleInput);
-    const privateRecord = await createPrivateLedgerRecord(sampleInput);
+describe('CipherNet public credential model', () => {
+  it('creates public ledger records without private credential material', () => {
+    const record = createPublicLedgerRecord(samplePublicInput);
 
-    expect(publicRecord.issuer).toBe('Republic Identity Authority');
-    expect(publicRecord.timestamp).toBe(sampleInput.issuedAt);
-    expect(publicRecord.credentialHash).toMatch(/^[a-f0-9]{64}$/);
-    expect(privateRecord.ownerSecret).toBe(sampleInput.ownerSecret);
-    expect(privateRecord.privateWitness).toMatch(/^[a-f0-9]{64}$/);
+    expect(record).toEqual({ ...samplePublicInput, status: 'active' });
+    expect(Object.keys(record)).toEqual(['credentialHash', 'issuer', 'timestamp', 'status']);
+    expect(JSON.stringify(record)).not.toMatch(/ownerSecret|witnessNonce|subject|documentHash|privateWitness/i);
   });
 
-  it('produces deterministic credential hashes', async () => {
-    const canonical = canonicalizeCredential(sampleInput);
-    const hash = await hashCredential(sampleInput);
-
-    expect(canonical).toContain('passport');
-    expect(hash).toMatch(/^[a-f0-9]{64}$/);
-    expect(await verifyCredentialHash(sampleInput, hash)).toBe(true);
-    expect(await verifyCredentialHash(sampleInput, '0'.repeat(64))).toBe(false);
+  it('normalizes 32-byte hex values and rejects non-hashes', () => {
+    expect(normalizeHex32(`0x${'A'.repeat(64)}`)).toBe('a'.repeat(64));
+    expect(() => normalizeHex32('abc', 'credentialHash')).toThrow('credentialHash must be a 32-byte hex string.');
   });
 
-  it('derives the private witness from owner secret and nonce', async () => {
-    const hash = await hashCredential(sampleInput);
-    const witness = await derivePrivateWitness(sampleInput.ownerSecret, sampleInput.witnessNonce, hash);
-
-    expect(witness).toMatch(/^[a-f0-9]{64}$/);
-    expect(witness).toBe(await derivePrivateWitness(sampleInput.ownerSecret, sampleInput.witnessNonce, hash));
+  it('hashes public records deterministically', async () => {
+    await expect(hashPublicRecord(samplePublicInput)).resolves.toMatch(/^[a-f0-9]{64}$/);
+    await expect(hashPublicRecord(samplePublicInput)).resolves.toBe(await hashPublicRecord(samplePublicInput));
   });
 
-  it('creates a verification receipt with minimum disclosure semantics', async () => {
-    const receipt = await createVerificationReceipt(sampleInput);
+  it('returns only a boolean verification result', () => {
+    const record = createPublicLedgerRecord(samplePublicInput);
+    const result = verifyPublicLedgerRecord(record, samplePublicInput);
 
-    expect(receipt.verified).toBe(true);
-    expect(receipt.publicRecord.credentialHash).toMatch(/^[a-f0-9]{64}$/);
-    expect(receipt.privateWitness).toMatch(/^[a-f0-9]{64}$/);
+    expect(result).toEqual({ verified: true });
+    expect(Object.keys(result)).toEqual(['verified']);
   });
 
-  it('keeps the Compact contract present and structurally complete', async () => {
-    const contractPath = path.join(process.cwd(), 'contracts', 'CredentialRegistry.compact');
-    const contractSource = await readFile(contractPath, 'utf8');
+  it('does not verify revoked records', () => {
+    const record = { ...createPublicLedgerRecord(samplePublicInput), status: 'revoked' as const };
 
-    expect(contractSource).toContain('export circuit registerCredential(');
-    expect(contractSource).toContain('export circuit verifyCredential(');
-    expect(contractSource).toContain('disclose(');
-    expect(contractSource).toContain('sealed ledger credentialRecords: Map<Field, CredentialRecord>;');
+    expect(verifyPublicLedgerRecord(record, samplePublicInput)).toEqual({ verified: false });
   });
 
-  it('tracks the managed artifact manifest for deployment readiness', async () => {
-    const manifestPath = path.join(process.cwd(), 'managed', 'CredentialRegistry.manifest.json');
-    const manifest = JSON.parse(await readFile(manifestPath, 'utf8')) as { contractName: string; sourceHash: string };
+  it('encrypts credential bytes before storage and decrypts them with the same AES key', async () => {
+    const plaintext = utf8ToBytes('passport-number: P-1234567');
+    const key = await generateAesGcmKey();
+    const encrypted = await encryptCredentialBytes(plaintext, key);
+    const decrypted = await decryptCredentialBytes(encrypted, key);
 
-    expect(manifest.contractName).toBe('CredentialRegistry');
-    expect(manifest.sourceHash).toMatch(/^[a-f0-9]{64}$/i);
+    expect(encrypted.algorithm).toBe('AES-GCM');
+    expect(encrypted.ivHex).toMatch(/^[a-f0-9]{24}$/);
+    expect(encrypted.plaintextSha256).toBe(await sha256Hex(plaintext));
+    expect(encrypted.ciphertextSha256).toMatch(/^[a-f0-9]{64}$/);
+    expect(encrypted.ciphertext).not.toEqual(plaintext);
+    expect(decrypted).toEqual(plaintext);
+  });
+
+  it('exports AES keys only for client-side custody and fingerprints them safely', async () => {
+    const key = await generateAesGcmKey();
+    const rawKeyHex = await exportAesGcmKeyHex(key);
+    const imported = await importAesGcmKeyHex(rawKeyHex);
+
+    expect(rawKeyHex).toMatch(/^[a-f0-9]{64}$/);
+    await expect(deriveClientKeyFingerprint(rawKeyHex)).resolves.toMatch(/^[a-f0-9]{64}$/);
+    await expect(exportAesGcmKeyHex(imported)).resolves.toBe(rawKeyHex);
   });
 });

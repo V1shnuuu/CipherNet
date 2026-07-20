@@ -18,7 +18,7 @@ export function SiteFooter() {
 
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button variant="secondary" asChild>
-              <a href="https://github.com" target="_blank" rel="noreferrer">
+              <a href="https://github.com/V1shnuuu/CipherNet" target="_blank" rel="noreferrer">
                 Source Repository
               </a>
             </Button>

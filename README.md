@@ -36,8 +36,5 @@ CipherNet's architecture intentionally separates public on-chain state from priv
 
 Below are the required screenshots for the Midnight Moonshots submission:
 
-### Successful Compile Output (Circuits Listed)
-![Compile Output](./docs/compile.png)
-
-### Contract Deployed with Address Shown
-![Deploy Output](./docs/deploy.png)
+### Compile and Deploy Output
+![Compile and Deploy Output](./docs/output.png)

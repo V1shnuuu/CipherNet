@@ -434,6 +434,11 @@ function RoadmapSection() {
               Wire the generated managed artifacts into the Midnight toolchain, point the frontend at the deployed contract address, and keep the privacy boundary intact.
             </CardDescription>
           </CardHeader>
+          <CardContent className="grid gap-4 md:grid-cols-3">
+            <InfoChip label="Target network" value="Preview or preprod" />
+            <InfoChip label="Contract address" value="Injected from MIDNIGHT_CONTRACT_ADDRESS" />
+            <InfoChip label="Managed artifacts" value="managed/circuits and managed/keys" />
+          </CardContent>
           <CardFooter>
             <Button className="group" asChild>
               <a href="#top" className="inline-flex items-center gap-2">

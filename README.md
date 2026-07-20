@@ -1,5 +1,7 @@
 # CipherNet
 
+**Live Demo:** [https://cipher-net-eight.vercel.app/](https://cipher-net-eight.vercel.app/)
+
 **CipherNet** is a privacy-first credential verification platform built on the Midnight Network. It enables organizations and individuals to issue, store, and verify credentials (such as university degrees, medical records, or financial statements) without exposing the underlying sensitive data. By utilizing zero-knowledge proofs, CipherNet ensures that a verifier only receives a cryptographic confirmation of authenticity (a "minimum disclosure" proof) while the full document remains strictly confidential.
 
 ## Setup Instructions

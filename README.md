@@ -31,3 +31,13 @@ CipherNet's architecture intentionally separates public on-chain state from priv
 
 - **Public State (Ledger)**: The Midnight public ledger only stores non-identifying metadata, such as the credential hash, the issuer's signature or identifier, and timestamp of issuance. This state proves that a credential was issued by a valid entity at a specific time, but reveals nothing about who holds the credential or what it contains.
 - **Private Witness (Local Data)**: The actual sensitive contents of the credential (e.g., student name, grades, social security number) exist entirely off-chain as a "Private Witness". When a user needs to prove a fact (e.g., "I have a degree from Midnight University"), the local proof server generates a zero-knowledge proof using the private witness. This proof is then verified against the public state on the ledger, achieving minimum disclosure.
+
+## Screenshots
+
+Below are the required screenshots for the Midnight Moonshots submission:
+
+### Successful Compile Output (Circuits Listed)
+*(Please place your compile screenshot image in the repository and update this link, e.g., `![Compile Output](./docs/compile.png)`)*
+
+### Contract Deployed with Address Shown
+*(Please place your deploy screenshot image in the repository and update this link, e.g., `![Deploy Output](./docs/deploy.png)`)*

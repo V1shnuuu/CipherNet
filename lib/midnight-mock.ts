@@ -1,7 +1,8 @@
 /**
- * Mock Midnight SDK layer.
- * Simulates wallet connection, circuit execution, and proof generation
- * with realistic delays and status updates.
+ * Midnight SDK layer integration.
+ * This file handles the connection to the Lace wallet via the injected window.midnight object.
+ * It also simulates circuit execution and proof generation with realistic delays and status updates
+ * for the purposes of the frontend demo when the actual Midnight SDK packages cannot be deployed.
  */
 
 function randomHex(bytes: number): string {
@@ -111,13 +112,16 @@ export async function simulateVerifyCredential(
   _timestamp: string,
   onProgress?: (step: string) => void
 ): Promise<CircuitExecutionResult & { verified: boolean }> {
-  onProgress?.('Loading credential from ledger...');
-  await delay(500);
+  onProgress?.('Initializing local prover for verifyCredential() circuit...');
+  await delay(600);
 
-  onProgress?.('Executing verifyCredential() circuit...');
-  await delay(1800 + Math.random() * 1200);
+  onProgress?.('Generating zero-knowledge proof locally using private Owner Secret...');
+  await delay(2000 + Math.random() * 1000);
 
-  onProgress?.('Validating zero-knowledge proof...');
+  onProgress?.('Submitting only the ZK Proof & public state to Midnight network...');
+  await delay(800 + Math.random() * 600);
+
+  onProgress?.('Network verifying proof without revealing credential metadata...');
   await delay(1000 + Math.random() * 800);
 
   onProgress?.('Proof verified!');

@@ -135,7 +135,7 @@ function HeroSection() {
             transition={{ duration: 0.8, ease: 'easeOut' }}
           >
             <Badge tone="emerald" className="mb-6 inline-flex">
-              Midnight Moonshots · Waxing Crescent
+              Midnight Moonshots · Level 2 (Waxing Crescent) · Lace Wallet Ready
             </Badge>
 
             <h1 className="text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">

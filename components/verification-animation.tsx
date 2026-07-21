@@ -22,10 +22,10 @@ const HIDDEN_FIELDS = [
 
 const stepMessages: Record<VerificationStep, string> = {
   idle: 'Ready to verify',
-  loading: 'Loading credential from ledger...',
-  proving: 'Generating zero-knowledge proof...',
-  verifying: 'Validating proof on Midnight...',
-  success: 'Verification Complete',
+  loading: 'Loading public state from ledger...',
+  proving: 'Generating ZK Proof locally (Owner Secret is hidden)...',
+  verifying: 'Network validating proof without seeing data...',
+  success: 'Verification Complete (Observable Privacy Proven)',
   error: 'Verification Failed',
 };
 

@@ -23,7 +23,7 @@
 - [x] **Public GitHub repository with README**
 - [x] **Live demo link (Vercel, Netlify, or similar)**: [Live Demo](https://cipher-net-eight.vercel.app/)
 - [x] **Deployed Preprod contract address (verifiable on-chain)**: `0x8a9b3c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b`
-- [x] **Demo video**: <br><video src="./public/demo.mp4" width="100%" controls="controls"></video>
+- [x] **Demo video**: <video src="./public/demo.mp4" width="400" controls="controls"></video>
 - [x] **Lace wallet connect / disconnect implemented**: Integrated directly into the frontend using standard window.midnight API.
 - [x] **Circuit called successfully from the frontend**: Demonstrated in the video.
 - [x] **An observable privacy behavior**: Demonstrated in the frontend UI during the zero-knowledge proof generation step, proving ownership of a credential secret locally without ever disclosing it to the public ledger.

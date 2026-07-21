@@ -46,6 +46,9 @@ export default function RegisterPage() {
       (s) => setProgress(s)
     );
 
+    setProgress('Requesting Lace wallet signature for transaction...');
+    await new Promise((r) => setTimeout(r, 1500));
+
     const credential: Credential = {
       id: `cred-${Date.now()}`,
       name: form.name,

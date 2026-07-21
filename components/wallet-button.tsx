@@ -89,7 +89,7 @@ export function WalletButton() {
       className="group relative flex items-center gap-2 rounded-xl border border-[rgba(0,245,160,0.25)] bg-[rgba(0,245,160,0.08)] px-5 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:border-[rgba(0,245,160,0.4)] hover:bg-[rgba(0,245,160,0.14)] hover:shadow-[0_0_24px_rgba(0,245,160,0.15)]"
     >
       <Wallet className="h-4 w-4 text-[#00F5A0]" />
-      Connect Wallet
+      Connect Lace Wallet
     </button>
   );
 }

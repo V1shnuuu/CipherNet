@@ -1,8 +1,7 @@
-<div align="center">
-  <img src="https://raw.githubusercontent.com/V1shnuuu/CipherNet/main/public/logo.svg" alt="CipherNet Logo" width="120" />
-</div>
-
 # CipherNet
+
+![CI](https://github.com/V1shnuuu/CipherNet/actions/workflows/ci.yml/badge.svg)
+
 > The Privacy Layer for Digital Trust.
 
 ## Live Demo
@@ -17,9 +16,9 @@ https://cipher-net-eight.vercel.app/
 CipherNet is a decentralized credential verification platform built on the Midnight network. Organizations no longer receive sensitive documents like university degrees, medical licenses, or professional certifications in plaintext. Instead, our Compact smart contract utilizes zero-knowledge proofs to verify the authenticity of a credential. Verifiers receive a simple, cryptographically guaranteed boolean response—and nothing else.
 
 ## Privacy Model
-- **What is PUBLIC:** The canonical SHA-256 credential hash, the issuer identifier, timestamp, and active status.
-- **What is PRIVATE:** The full credential document (PDF or structured data), owner PII (full name, ID numbers, grades), and the owner secret.
-- **What the user PROVES without revealing:** The user proves they possess a valid credential document that mathematically matches the publicly registered credential hash, without revealing the document's contents or the owner secret to the network or the verifier.
+- **PUBLIC:** The canonical SHA-256 credential hash, the issuer identifier, timestamp, and active status.
+- **PRIVATE:** The full credential document (PDF or structured data), owner PII (full name, ID numbers, grades), and the owner secret.
+- **PROVED without revealing:** The user proves they possess a valid credential document that mathematically matches the publicly registered credential hash, without revealing the document's contents or the owner secret to the network or the verifier.
 
 ## Privacy Claim
 An on-chain observer sees a state verification event recording the credential hash, issuer, and validation result (e.g., `✓ VERIFIED`). They cannot see the actual credential data, the owner's identity, or any plaintext metadata, which remain entirely on the user's local device.
@@ -31,7 +30,7 @@ Midnight network, Compact, Midnight.js SDK, Next.js (React), Lace wallet
 - Lace wallet installed (Nightly extension configured for Midnight Preprod)
 - Node.js v18+ (or v22)
 
-## Run Locally
+## Setup & Run Locally
 1. Clone the repository:
 ```bash
 git clone https://github.com/V1shnuuu/CipherNet.git
@@ -47,13 +46,23 @@ npm run dev
 ```
 Open http://localhost:3000 in your browser to interact with the dApp.
 
+## Run Tests
+```bash
+npm test
+```
+
+## CI/CD
+Our GitHub Actions pipeline (`.github/workflows/ci.yml`) automatically runs on every push and pull request to the `main` branch. It checks out the code, installs dependencies on Node.js v22, simulates the `compact compile` step to build the circuits and keys, and finally runs our Vitest test suite to ensure all cryptographic verifications, state transitions, and privacy models pass. The CI badge at the top of this README reflects the current build status.
+
+## Product Proposal
+See PROPOSAL.md
+
 ## Demo Video
 [Watch on Google Drive](https://drive.google.com/file/d/1qSTCJ1zUBWI6814CqAIUMZOS4XBFF3aY/view?usp=sharing)
 
 ---
 
 ## 📜 Smart Contract Source Code (`contracts/CredentialRegistry.compact`)
-
 To ensure the automated AI assessment correctly detects our circuit definitions and ledger state declarations, the full Compact smart contract source code is provided below. The file is also located at `contracts/CredentialRegistry.compact` and `CredentialRegistry.compact` (root).
 
 ```compact
@@ -113,6 +122,8 @@ export circuit isCredentialActive(credentialHash: Bytes<32>): Boolean {
   return credentialRecords.lookup(credentialHash).status == CredentialStatus.ACTIVE;
 }
 ```
+
+
 
 ---
 

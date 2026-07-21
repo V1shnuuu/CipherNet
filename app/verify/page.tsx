@@ -127,16 +127,16 @@ export default function VerifyPage() {
             )}
           </AnimatePresence>
 
-          {/* Privacy explanation */}
+          {/* Privacy explanation & Success Indicator */}
           <div className="rounded-2xl border border-white/6 bg-[#0A0A0A] p-6">
             <div className="flex items-center gap-2 mb-3">
               <EyeOff className="h-4 w-4 text-[#00D9FF]" />
-              <h3 className="text-sm font-semibold text-white">Observable Privacy Behavior</h3>
+              <h3 className="text-sm font-semibold text-white">Circuit Execution & Observable Privacy</h3>
             </div>
             <p className="text-xs text-white/40 leading-relaxed">
-              When you run a verification, the Midnight Compact circuit executes <code className="text-[#00D9FF]/60">verifyCredential()</code> using zero-knowledge proofs.
-              The verifier receives only &quot;✓ VERIFIED&quot; or &quot;✗ FAILED&quot; — never the credential contents.
-              The full document (name, CGPA, institution, student ID) remains entirely in the private witness and is never disclosed to the ledger or the verifier.
+              When you run a verification, the Midnight Compact circuit executes <code className="text-[#00D9FF]/60">verifyCredential()</code> locally using zero-knowledge proofs.
+              The Lace wallet signs the transaction for the Preprod network, and the verifier receives only &quot;✓ VERIFIED&quot; or &quot;✗ FAILED&quot; — never the credential contents.
+              The full document remains entirely in your private witness and is never disclosed to the ledger.
             </p>
           </div>
         </div>

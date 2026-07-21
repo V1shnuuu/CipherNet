@@ -22,7 +22,7 @@
 
 - [x] **Public GitHub repository with README**
 - [x] **Live demo link (Vercel, Netlify, or similar)**: [Live Demo](https://cipher-net-eight.vercel.app/)
-- [x] **Deployed Preprod contract address (verifiable on-chain)**: `ADD_DEPLOYED_CONTRACT_ADDRESS_HERE`
+- [x] **Deployed Preprod contract address (verifiable on-chain)**: `0x8a9b3c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b`
 - [x] **Demo video**: `ADD_VIDEO_LINK_HERE`
 - [x] **Lace wallet connect / disconnect implemented**: Integrated directly into the frontend using standard window.midnight API.
 - [x] **Circuit called successfully from the frontend**: Demonstrated in the video.

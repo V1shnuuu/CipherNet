@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, ShieldCheck, Loader2, Lock, Eye, EyeOff, CheckCircle2, XCircle } from 'lucide-react';
+import { Shield, ShieldCheck, Loader2, Lock, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
 import { useState, useCallback } from 'react';
 
 type VerificationStep = 'idle' | 'loading' | 'proving' | 'verifying' | 'success' | 'error';

@@ -54,7 +54,7 @@ export function ActivityTimeline({ events, maxItems = 20 }: ActivityTimelineProp
         const color = colorMap[event.type] || 'text-white/40';
         const time = new Date(event.timestamp);
         const timeStr = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const dateStr = time.toLocaleDateString([], { month: 'short', day: 'numeric' });
+        const _dateStr = time.toLocaleDateString([], { month: 'short', day: 'numeric' });
 
         return (
           <motion.div

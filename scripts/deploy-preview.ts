@@ -5,8 +5,8 @@ import process from 'node:process';
 
 const contractPath = path.join(process.cwd(), 'contracts', 'CredentialRegistry.compact');
 const manifestPath = path.join(process.cwd(), 'managed', 'CredentialRegistry.manifest.json');
-const contractAddress = process.env.MIDNIGHT_CONTRACT_ADDRESS;
-const network = process.env.MIDNIGHT_NETWORK ?? 'preview';
+const _contractAddress = process.env.MIDNIGHT_CONTRACT_ADDRESS;
+const _network = process.env.MIDNIGHT_NETWORK ?? 'preview';
 
 if (!existsSync(contractPath)) {
   throw new Error('Missing contracts/CredentialRegistry.compact.');
@@ -16,10 +16,10 @@ if (!existsSync(manifestPath)) {
   console.warn('Managed manifest not found. Run npm run compile:managed before preview deployment.');
 }
 
-let manifestSummary = 'unavailable';
+let _manifestSummary = 'unavailable';
 if (existsSync(manifestPath)) {
   const manifest = JSON.parse(await readFile(manifestPath, 'utf8')) as { contractName?: string; sourceHash?: string };
-  manifestSummary = `${manifest.contractName ?? 'CredentialRegistry'} (${manifest.sourceHash ?? 'no source hash'})`;
+  _manifestSummary = `${manifest.contractName ?? 'CredentialRegistry'} (${manifest.sourceHash ?? 'no source hash'})`;
 }
 
 console.log('\n[Midnight CLI] Deploying CredentialRegistry to Preview Network...');

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
 import {
@@ -14,8 +14,6 @@ import {
   EyeOff,
   FileCheck2,
   Fingerprint,
-  Hash,
-  Hexagon,
   Lock,
   MoonStar,
   Shield,

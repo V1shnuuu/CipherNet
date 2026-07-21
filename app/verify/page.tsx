@@ -14,7 +14,7 @@ export default function VerifyPage() {
   const { wallet, connect, credentials, logActivity, incrementVerifications } = useWallet();
   const [searchHash, setSearchHash] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
-  const [selectedCredential, setSelectedCredential] = useState<string | null>(null);
+  const [_selectedCredential, setSelectedCredential] = useState<string | null>(null);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

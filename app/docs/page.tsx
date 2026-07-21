@@ -6,15 +6,11 @@ import { WalletButton } from '../../components/wallet-button';
 import { MOCK_CONTRACT_ADDRESS } from '../../types';
 import {
   BookOpen,
-  Shield,
   Cpu,
-  Globe,
-  Layers,
-  Lock,
-  Wallet,
   FileCode2,
-  Eye,
-  EyeOff,
+  Layers,
+  Shield,
+  Wallet,
 } from 'lucide-react';
 
 const sections = [

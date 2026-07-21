@@ -27,7 +27,7 @@ declare global {
   interface Window {
     midnight?: {
       mnLace?: {
-        enable: () => Promise<any>;
+        enable: () => Promise<unknown>;
       };
     };
   }
@@ -40,7 +40,7 @@ export async function connectLaceWallet(): Promise<{
   if (typeof window !== 'undefined' && window.midnight?.mnLace) {
     try {
       // Attempt to connect via the actual injected Lace DApp Connector
-      const api = await window.midnight.mnLace.enable();
+      await window.midnight.mnLace.enable();
       // If we don't have the SDK to parse the state stream, we'll generate a consistent mock address
       // but the connection is real and the user will see the Lace authorization popup.
       return {

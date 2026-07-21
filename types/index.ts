@@ -78,5 +78,5 @@ export interface MidnightLaceProvider {
 
 export interface MidnightLaceAPI {
   state: () => Promise<{ address: string }>; // Abstracted for demo purposes
-  submitTransaction: (tx: any) => Promise<string>;
+  submitTransaction: (tx: unknown) => Promise<string>;
 }

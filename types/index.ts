@@ -65,3 +65,18 @@ export interface ContractInfo {
 export const MOCK_CONTRACT_ADDRESS = '0x8a9b3c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b';
 export const MOCK_NETWORK = 'Midnight Preprod';
 export const MOCK_CHAIN_ID = 'midnight-preprod-1';
+
+/**
+ * Lace DApp Connector interfaces based on Midnight's injected provider.
+ */
+export interface MidnightLaceProvider {
+  enable: () => Promise<MidnightLaceAPI>;
+  isEnabled: () => Promise<boolean>;
+  apiVersion: string;
+  name: string;
+}
+
+export interface MidnightLaceAPI {
+  state: () => Promise<{ address: string }>; // Abstracted for demo purposes
+  submitTransaction: (tx: any) => Promise<string>;
+}

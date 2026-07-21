@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
 import type { WalletState, WalletStatus, Credential, ActivityEvent, ActivityEventType } from '../types';
 import { MOCK_CONTRACT_ADDRESS, MOCK_NETWORK } from '../types';
-import { simulateWalletConnection, simulateWalletDisconnection } from './midnight-mock';
+import { connectLaceWallet, disconnectLaceWallet } from './midnight-mock';
 
 interface WalletContextValue {
   wallet: WalletState;
@@ -99,7 +99,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const connect = useCallback(async () => {
     setWallet((prev) => ({ ...prev, status: 'connecting' as WalletStatus }));
     try {
-      const result = await simulateWalletConnection();
+      const result = await connectLaceWallet();
       setWallet({
         status: 'connected',
         address: result.address,
@@ -113,7 +113,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   }, [logActivity]);
 
   const disconnect = useCallback(async () => {
-    await simulateWalletDisconnection();
+    await disconnectLaceWallet();
     setWallet({
       status: 'disconnected',
       address: null,

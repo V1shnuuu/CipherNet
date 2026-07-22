@@ -62,8 +62,10 @@ export interface ContractInfo {
   verificationCount: number;
 }
 
-export const MOCK_CONTRACT_ADDRESS = '0x8a9b3c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b';
-export const MOCK_NETWORK = 'Midnight Preprod';
+// NOTE: This is an illustrative placeholder address for the prototype UI.
+// The contract is not yet deployed to Midnight Preprod — see README "Project Status".
+export const MOCK_CONTRACT_ADDRESS = '0x8a9b…(demo — not yet deployed)';
+export const MOCK_NETWORK = 'Midnight Preprod (simulated)';
 export const MOCK_CHAIN_ID = 'midnight-preprod-1';
 
 /**

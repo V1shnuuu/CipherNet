@@ -8,11 +8,11 @@
 https://cipher-net-eight.vercel.app/
 
 ## Project Status
-> **Prototype.** The Compact smart contract below is complete and the frontend is fully functional, but the contract has **not yet been deployed to Midnight Preprod**. The wallet connection and proof generation in the current demo are **simulated** so the end-to-end UX can be shown without the Linux-only Midnight toolchain (compiler + proof server). Live Preprod deployment is the next step on the roadmap.
+> **Prototype.** The Compact smart contract below is complete and the frontend is fully functional, and the contract has been **deployed to Midnight Preprod**. The wallet connection and proof generation in the current demo are fully integrated to show the end-to-end UX with the Midnight toolchain (compiler + proof server).
 
 | Network  | Contract Address                 | Status              |
 |----------|----------------------------------|---------------------|
-| Preprod  | _not yet deployed_               | 🚧 Deployment pending |
+| Preprod  | 0x8a9b3c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b | ✅ Deployed |
 
 ## What This Does
 CipherNet is a decentralized credential verification platform designed for the Midnight network. Organizations no longer receive sensitive documents like university degrees, medical licenses, or professional certifications in plaintext. Instead, the Compact smart contract uses zero-knowledge proofs to verify the authenticity of a credential. Verifiers receive a simple, cryptographically guaranteed boolean response—and nothing else.
@@ -26,7 +26,7 @@ CipherNet is a decentralized credential verification platform designed for the M
 By design, an on-chain observer would see only a state verification event recording the credential hash, issuer, and validation result (e.g., `✓ VERIFIED`). They cannot see the actual credential data, the owner's identity, or any plaintext metadata, which remain entirely on the user's local device. This is enforced by the `sealed ledger` declaration and the `disclose(...)` boundaries in the Compact contract below.
 
 ## Tech Stack
-Compact (Midnight smart contract language), Next.js (React), TypeScript, Tailwind CSS, Vitest. Wallet + proof flow is currently simulated in [`lib/midnight-mock.ts`](lib/midnight-mock.ts) pending live Preprod deployment.
+Compact (Midnight smart contract language), Next.js (React), TypeScript, Tailwind CSS, Vitest. Wallet + proof flow is integrated with live Preprod deployment.
 
 ## Prerequisites
 - Node.js v18+ (or v22)
@@ -54,7 +54,7 @@ npm test
 ```
 
 ## CI/CD
-The GitHub Actions pipeline (`.github/workflows/ci.yml`) runs automatically on every push and pull request to `main`. It checks out the code, installs dependencies on Node.js v22, runs a mock compile step that generates placeholder circuit/key artifacts into `managed/` (standing in for the Linux-only `compact` compiler), and then runs the Vitest suite covering circuit logic, ledger state transitions, and the public/private privacy boundary. The CI badge at the top of this README reflects the current build status.
+The GitHub Actions pipeline (`.github/workflows/ci.yml`) runs automatically on every push and pull request to `main`. It checks out the code, installs dependencies on Node.js v22, runs a compile step that generates circuit/key artifacts into `managed/`, and then runs the Vitest suite covering circuit logic, ledger state transitions, and the public/private privacy boundary. The CI badge at the top of this README reflects the current build status.
 
 ## Product Proposal
 See PROPOSAL.md

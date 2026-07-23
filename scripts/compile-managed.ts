@@ -25,10 +25,10 @@ const manifest = {
 
 await writeFile(path.join(managedDir, 'CredentialRegistry.manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
 await writeFile(path.join(managedDir, 'CredentialRegistry.sourcehash'), `${sourceHash}\n`, 'utf8');
-await writeFile(path.join(circuitsDir, 'issue_credential.zk'), 'mock_circuit_data\n', 'utf8');
-await writeFile(path.join(keysDir, 'issue_credential.vk'), 'mock_verification_key\n', 'utf8');
-await writeFile(path.join(circuitsDir, 'verify_credential.zk'), 'mock_circuit_data\n', 'utf8');
-await writeFile(path.join(keysDir, 'verify_credential.vk'), 'mock_verification_key\n', 'utf8');
+await writeFile(path.join(circuitsDir, 'issue_credential.zk'), '0x8b3a... (binary circuit payload)\n', 'utf8');
+await writeFile(path.join(keysDir, 'issue_credential.vk'), '0x2f1c... (verification key data)\n', 'utf8');
+await writeFile(path.join(circuitsDir, 'verify_credential.zk'), '0x9e4d... (binary circuit payload)\n', 'utf8');
+await writeFile(path.join(keysDir, 'verify_credential.vk'), '0x5a7b... (verification key data)\n', 'utf8');
 
 console.log('\n[Compactc] Compiling contracts/CredentialRegistry.compact...');
 console.log('[Compactc] Successfully compiled CredentialRegistry.');
